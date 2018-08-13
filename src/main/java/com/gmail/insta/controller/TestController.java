@@ -4,23 +4,18 @@ import com.gmail.insta.model.Message;
 import com.gmail.insta.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-@RestController
-public class MainController {
+@Controller
+public class TestController {
 
     @Autowired
     MessageRepository messageRepository;
@@ -28,17 +23,18 @@ public class MainController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @GetMapping("/all")
-            ResponseEntity<List<Message>> getMessages()
-    {
+    @GetMapping(value = "/test")
+    String test(Map<String, Object> model) {
 
         List<Message> messages = messageRepository.findAll();
 
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+        model.put("messages", messages);
+
+        return "test";
     }
 
-    @PostMapping("/upload")
-    ResponseEntity<Message> uploadMessage(
+    @PostMapping("/savemessage")
+    String saveMessage(
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "file", required = false) MultipartFile file
     ) throws IOException {
@@ -46,10 +42,10 @@ public class MainController {
         message.setText(text);
         message.setDate(new Date());
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
+        if(file != null && !file.getOriginalFilename().isEmpty()){
             File uploadDir = new File(uploadPath);
 
-            if (!uploadDir.exists()) {
+            if(!uploadDir.exists()){
                 uploadDir.mkdir();
             }
 
@@ -63,6 +59,6 @@ public class MainController {
 
         messageRepository.save(message);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return "redirect:/test";
     }
 }
