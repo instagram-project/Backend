@@ -18,6 +18,7 @@ POST - /upload
 Параметры - text, file
 
 В HTML выглядит так:
+```
 <form method="post" action="/upload" enctype="multipart/form-data">
     <input type="text" name="text" placeholder="text">
     <input type="file" name="file">
