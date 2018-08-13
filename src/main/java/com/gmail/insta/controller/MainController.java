@@ -2,22 +2,17 @@ package com.gmail.insta.controller;
 
 import com.gmail.insta.model.Message;
 import com.gmail.insta.repository.MessageRepository;
+import com.gmail.insta.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class MainController {
@@ -25,10 +20,14 @@ public class MainController {
     @Autowired
     MessageRepository messageRepository;
 
+    @Autowired
+    MessageService messageService;
+
     @Value("${upload.path}")
     private String uploadPath;
 
-    @GetMapping("/all")
+    // Получить список всех сообщений
+    @GetMapping(value = "/all", produces={"application/json; charset=UTF-8"})
             ResponseEntity<List<Message>> getMessages()
     {
 
@@ -37,7 +36,25 @@ public class MainController {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
+    // Получить список сообщений с пагинацией
+    @GetMapping(value = {"/", "/page/{pageId}"}, produces={"application/json; charset=UTF-8"})
+    ResponseEntity<Collection<Message>> getMessages(@PathVariable("pageId") Optional<Integer> pageId) {
+        Collection<Message> list = messageService.findAll(pageId.orElse(1)).getContent();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    // Получить конкретное сообщение
+    @GetMapping(value = "/message/{messageId}", produces={"application/json; charset=UTF-8"})
+    ResponseEntity<Message> findMessage(@PathVariable("messageId") Long messageId) {
+
+        long id = messageId;
+        Message message = messageRepository.findById(id);
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    // Загрузка сообщения на сервер
+    @PostMapping(value = "/upload", produces={"application/json; charset=UTF-8"})
     ResponseEntity<Message> uploadMessage(
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "file", required = false) MultipartFile file
