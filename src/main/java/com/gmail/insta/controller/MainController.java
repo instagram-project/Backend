@@ -5,6 +5,8 @@ import com.gmail.insta.repository.MessageRepository;
 import com.gmail.insta.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +29,8 @@ public class MainController {
     private String uploadPath;
 
     // Получить список всех сообщений
-    @GetMapping(value = "/all", produces={"application/json; charset=UTF-8"})
-            ResponseEntity<List<Message>> getMessages()
-    {
+    @GetMapping(value = "/all", produces = {"application/json; charset=UTF-8"})
+    ResponseEntity<List<Message>> getMessages() {
 
         List<Message> messages = messageRepository.findAll();
 
@@ -37,16 +38,24 @@ public class MainController {
     }
 
     // Получить список сообщений с пагинацией
-    @GetMapping(value = {"/", "/page/{pageId}"}, produces={"application/json; charset=UTF-8"})
-    ResponseEntity<Collection<Message>> getMessages(@PathVariable("pageId") Optional<Integer> pageId) {
-        Collection<Message> list = messageService.findAll(pageId.orElse(1)).getContent();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    @GetMapping(value = "/", produces = {"application/json; charset=UTF-8"})
+    ResponseEntity<Collection<Message>> getMessages(
+            @RequestParam(value = "page", required = false) Integer pageId) {
+        Page<Message> list = messageService.findAll(pageId == null ? 1 : pageId);
+        Collection<Message> messages = list.getContent();
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("totalMessages", Long.toString(list.getTotalElements()));
+        responseHeaders.set("totalPages", Integer.toString(list.getTotalPages()));
+        responseHeaders.set("currentPage", Integer.toString(list.getNumber() + 1));
+
+        return new ResponseEntity<>(messages, responseHeaders, HttpStatus.OK);
     }
 
     // Получить конкретное сообщение
-    @GetMapping(value = "/message/{messageId}", produces={"application/json; charset=UTF-8"})
-    ResponseEntity<Message> findMessage(@PathVariable("messageId") Long messageId) {
-
+    @GetMapping(value = "/message", produces = {"application/json; charset=UTF-8"})
+    ResponseEntity<Message> findMessage(
+            @RequestParam(value = "messageId", required = false) Long messageId) {
         long id = messageId;
         Message message = messageRepository.findById(id);
 
@@ -54,7 +63,7 @@ public class MainController {
     }
 
     // Загрузка сообщения на сервер
-    @PostMapping(value = "/upload", produces={"application/json; charset=UTF-8"})
+    @PostMapping(value = "/upload", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<Message> uploadMessage(
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "file", required = false) MultipartFile file
@@ -81,5 +90,21 @@ public class MainController {
         messageRepository.save(message);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping("/delete")
+    public ResponseEntity<Message> delMessage(
+            @RequestParam("messageId") Long messageId) {
+        messageService.deleteMessage(messageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping("/edit")
+    public ResponseEntity<Message> updateMessage(
+            @RequestParam("messageId") Long messageId,
+            @RequestParam("text") String text)
+    {
+        Message message = messageService.editMessage(messageId, text);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
