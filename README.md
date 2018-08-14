@@ -44,3 +44,5 @@ POST - "/upload"
     <button type="submit">Добавить</button>
 </form>
 ```
+
+Все изображения находятся по адресу /images/название.jpg
