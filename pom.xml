@@ -35,6 +35,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!--security-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 
         <!--Devtools-->
         <dependency>
@@ -67,10 +72,18 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- mail -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${jmail.version}</version>
+        </dependency>
+
     </dependencies>
 
     <properties>
         <java.version>1.8</java.version>
+        <jmail.version>1.4.7</jmail.version>
     </properties>
 
 
