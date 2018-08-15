@@ -16,6 +16,8 @@ public interface UserService {
 
     Optional<User> findByResetToken(String token);
 
+    Optional<User> findById(Long id);
+
     void activateUser(User user);
 
     User reset(User user);

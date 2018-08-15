@@ -3,6 +3,7 @@ package com.gmail.insta.controller;
 import com.gmail.insta.model.Message;
 import com.gmail.insta.repository.MessageRepository;
 import com.gmail.insta.service.MessageService;
+import com.gmail.insta.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,9 @@ public class MainController {
 
     @Autowired
     MessageService messageService;
+
+    @Autowired
+    UserServiceImpl userService;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -66,7 +70,8 @@ public class MainController {
     @PostMapping(value = "/upload", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<Message> uploadMessage(
             @RequestParam(value = "text", required = false) String text,
-            @RequestParam(value = "file", required = false) MultipartFile file
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "userId", required = false) Long userId
     ) throws IOException {
         Message message = new Message();
         message.setText(text);
@@ -86,6 +91,8 @@ public class MainController {
 
             message.setFilename(resultFilename);
         }
+
+        message.setAuthor(userService.findById(userId).get());
 
         messageRepository.save(message);
 

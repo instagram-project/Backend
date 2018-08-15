@@ -59,6 +59,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return usersRepository.findById(id);
+    }
+
+    @Override
     public void activateUser(User user) {
         user.setConfirmationToken(null);
         user.setState(State.ACTIVE);

@@ -34,9 +34,9 @@ POST - "/delete"
 
 ##### Загрузка сообщения на сервер
 POST - "/upload"  
-Параметры - text, file
+Параметры - text, file, userId
 
-В HTML выглядит так:
+В HTML выглядит так (без юзера):
 ```
 <form method="post" action="/upload" enctype="multipart/form-data">
     <input type="text" name="text" placeholder="text">
