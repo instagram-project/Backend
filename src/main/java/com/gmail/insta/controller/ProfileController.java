@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gmail.insta.form.ProfileForm;
 import com.gmail.insta.model.User;
 import com.gmail.insta.service.TokenService;
 import com.gmail.insta.service.UserService;
@@ -48,10 +47,10 @@ public class ProfileController {
 	
 	@RequestMapping(value = "/profile", method = RequestMethod.PUT)
     public ResponseEntity<UserProfile> profile(
-    		@RequestBody ProfileForm profileForm,
+    		@RequestBody UserProfile userProfile,
     		@RequestParam("token") String token) {        
         User user = tokenService.findOneByValue(token).get().getUser();  
-        user.setName(profileForm.getName());
+        user.setName(userProfile.getName());
         user = userService.update(user);
         return ResponseEntity.ok(UserProfile.from(user));    
     }
