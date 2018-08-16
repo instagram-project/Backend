@@ -33,7 +33,7 @@ public class CommentController {
 		User user = tokenService.findOneByValue(token).get().getUser();  
 		comment.setDate(new Date());
 		comment.setMessage(messageId);
-		comment.setUser(user.getName());
+		comment.setUser(user.getId());
 		commentService.add(comment);		
 		return new ResponseEntity<>(HttpStatus.OK);
 		

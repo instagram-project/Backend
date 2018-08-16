@@ -24,8 +24,8 @@ public class Comment {
 	@JsonIgnore
 	private Long message;
 	
-	@Column(name="user_name")
-	private String user;
+	@Column(name="user_id")
+	private Long user;
 	
 	@Column(name="text")
 	private String text;
@@ -50,10 +50,10 @@ public class Comment {
 	public void setMessage(Long message) {
 		this.message = message;
 	}
-	public String getUser() {
+	public Long getUser() {
 		return user;
 	}
-	public void setUser(String user) {
+	public void setUser(Long user) {
 		this.user = user;
 	}
 	public String getText() {
