@@ -1,7 +1,6 @@
 package com.gmail.insta.model;
 
 import javax.persistence.*;
-import javax.xml.crypto.Data;
 import java.util.Date;
 
 @Entity
@@ -17,9 +16,7 @@ public class Message {
 
     private Date date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User author;
+    private Long userId;
 
     public Message() {
     }
@@ -27,10 +24,6 @@ public class Message {
     public Message(String text, String filename) {
         this.text = text;
         this.filename = filename;
-    }
-
-    public String getAuthorName() {
-        return author != null ? author.getName() : "<none>";
     }
 
     public String getText() {
@@ -65,11 +58,11 @@ public class Message {
         this.id = id;
     }
 
-    public User getAuthor() {
-        return author;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

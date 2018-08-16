@@ -97,7 +97,9 @@ public class MainController {
             message.setFilename(resultFilename);
         }
 
-        message.setAuthor(userService.findById(userId).get());
+        if (userId != null) {
+            message.setUserId(userId);
+        }
 
         messageRepository.save(message);
 
