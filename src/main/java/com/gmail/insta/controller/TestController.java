@@ -1,24 +1,37 @@
 package com.gmail.insta.controller;
 
 import com.gmail.insta.model.Message;
+import com.gmail.insta.model.User;
 import com.gmail.insta.repository.MessageRepository;
+import com.gmail.insta.repository.UsersRepository;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
 public class TestController {
 
     @Autowired
+    UsersRepository userRepository;
+
+    @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
+    ServletContext servletContext;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -29,6 +42,10 @@ public class TestController {
         List<Message> messages = messageRepository.findAll();
 
         model.put("messages", messages);
+
+        Collection<User> users = userRepository.findAll();
+
+        model.put("users", users);
 
         return "test";
     }
@@ -61,4 +78,6 @@ public class TestController {
 
         return "redirect:/test";
     }
+
+
 }

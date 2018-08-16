@@ -36,10 +36,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/like/**").hasAuthority("USER")
                 .antMatchers("/additem").hasAuthority("USER")
                 .antMatchers("/addphoto/**").hasAuthority("USER")
-                .antMatchers("/login").permitAll();
+                .antMatchers("/login").permitAll()
+                .antMatchers("/images/**").permitAll();
         http.csrf().disable();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);

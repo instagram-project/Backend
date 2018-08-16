@@ -8,7 +8,7 @@
 </form>
 <br>
 
-<ul class="list-group mt-3">
+<ul class="list-group mt-3" style="width: 400px; float: left">
     <#if messages??>
 <#list messages as message>
     <li class="list-group-item">
@@ -17,6 +17,35 @@
         </#if>
 
         <p>${message.text}</p>
+    </li>
+</#list>
+    </#if>
+</ul>
+
+<ul class="list-group mt-3" style="width: 400px; float: left">
+    <p>Список юзеров:</p>
+    <#if users??>
+<#list users as user>
+    <li class="list-group-item">
+        <#if user.id??>
+            <p>id: ${user.id}</p>
+        </#if>
+
+         <#if user.email??>
+            <p>email: ${user.email}</p>
+         </#if>
+
+         <#if user.name??>
+            <p>name: ${user.name}</p>
+         </#if>
+
+         <#if user.role??>
+            <p>role: ${user.role}</p>
+         </#if>
+
+        <#if user.state??>
+            <p>state: ${user.state}</p>
+        </#if>
     </li>
 </#list>
     </#if>

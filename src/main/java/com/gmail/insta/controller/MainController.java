@@ -1,7 +1,9 @@
 package com.gmail.insta.controller;
 
 import com.gmail.insta.model.Message;
+import com.gmail.insta.model.User;
 import com.gmail.insta.repository.MessageRepository;
+import com.gmail.insta.repository.UsersRepository;
 import com.gmail.insta.service.MessageService;
 import com.gmail.insta.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.util.*;
 
 @RestController
 public class MainController {
+
+    @Autowired
+    UsersRepository userRepository;
 
     @Autowired
     MessageRepository messageRepository;
@@ -114,4 +119,12 @@ public class MainController {
         Message message = messageService.editMessage(messageId, text);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+    @RequestMapping("/all_users")
+    ResponseEntity<Collection<User>> getUsers(){
+        Collection<User> users = userRepository.findAll();
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
 }
