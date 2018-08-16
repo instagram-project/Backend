@@ -1,9 +1,8 @@
 package com.gmail.insta.repository;
 
-
+import com.gmail.insta.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.gmail.insta.model.Token;
 
 import java.util.Optional;
 

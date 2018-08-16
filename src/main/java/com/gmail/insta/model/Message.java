@@ -1,11 +1,8 @@
 package com.gmail.insta.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+
+import javax.persistence.*;
+
 import javax.xml.crypto.Data;
 
 
@@ -27,7 +24,12 @@ public class Message {
     
     @OneToMany(mappedBy="message", fetch = FetchType.EAGER)
 	private Set<Comment> comments;
-    
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
+
+
     public Message() {
     }
 
@@ -42,6 +44,10 @@ public class Message {
     public Message(String text, String filename) {
         this.text = text;
         this.filename = filename;
+    }
+
+    public String getAuthorName() {
+        return author != null ? author.getName() : "<none>";
     }
 
     public String getText() {
@@ -74,5 +80,13 @@ public class Message {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }
