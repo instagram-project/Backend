@@ -1,6 +1,7 @@
 package com.gmail.insta.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class CommentController {
 	CommentService commentService;
 	
 	@PostMapping(value="/message/{message_id}/comment")
-	public ResponseEntity<String> comment(
+	public ResponseEntity<List<Comment>> comment(
 			@RequestBody Comment comment,
 			@PathVariable("message_id") Long messageId,
 			@RequestParam("token") String token){
@@ -35,7 +36,7 @@ public class CommentController {
 		comment.setMessage(messageId);
 		comment.setUser(user.getId());
 		commentService.add(comment);		
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(commentService.findAllByMessage(messageId).get(), HttpStatus.OK);
 		
 	}
 
