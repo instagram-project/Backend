@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
+
+import javax.xml.ws.RequestWrapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -13,7 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,14 +42,22 @@ public class ProfileController {
 	
 	@Autowired
 	private UserService userService;
+		
 	
-	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ResponseEntity<UserProfile> profile(@RequestParam("token") String token) {        
-        User user = tokenService.findOneByValue(token).get().getUser(); 
+	@RequestMapping(value = "/user/profile", method = RequestMethod.GET)
+    public ResponseEntity<UserProfile> profile(
+    		@RequestParam("userId") Optional<Long> userId,
+    		@RequestParam("token") Optional<String> token) {        
+		User user;
+		if(userId.isPresent()) {
+			user = userService.findById(userId.get()).get();
+		} else {
+		    user = tokenService.findOneByValue(token.get()).get().getUser();
+		}
         return ResponseEntity.ok(UserProfile.from(user));    
     }
 	
-	@RequestMapping(value = "/profile", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/profile", method = RequestMethod.PUT)
     public ResponseEntity<UserProfile> profile(
     		@RequestBody UserProfile userProfile,
     		@RequestParam("token") String token) {        
@@ -55,9 +67,16 @@ public class ProfileController {
         return ResponseEntity.ok(UserProfile.from(user));    
     }
 	
-	@RequestMapping(value = "/profile/avatar", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-	public ResponseEntity<Resource> avatar(@RequestParam("token") String token){
-		User user = tokenService.findOneByValue(token).get().getUser();
+	@RequestMapping(value = "/user/avatar", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<Resource> avatar(
+			@RequestParam(value = "userId") Optional<Long> userId,
+			@RequestParam(value = "token") Optional<String> token){
+		User user;
+		if(userId.isPresent()) {
+			user = userService.findById(userId.get()).get();
+		} else {
+		    user = tokenService.findOneByValue(token.get()).get().getUser();
+		}
 		String userPath = uploadPath + "/avatars/" + user.getId();
 	    
 		if(Files.notExists(Paths.get(userPath))) {
@@ -69,7 +88,7 @@ public class ProfileController {
 	    return new ResponseEntity<>(resource, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/profile/avatar", method = RequestMethod.PUT, produces = MediaType.IMAGE_JPEG_VALUE)
+	@RequestMapping(value = "/user/avatar", method = RequestMethod.PUT, produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<Resource> avatar(
     		@RequestParam("file") MultipartFile uploaded,
             @RequestParam("token") String token) {        
