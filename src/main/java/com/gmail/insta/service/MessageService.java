@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,11 @@ public class MessageService {
         messageRepository.save(message);
 
         return message;
+    }
+
+    public List<Message> findUserMessages(Long id){
+        List<Message> messages = messageRepository.findByUserIdOrderByDateDesc(id);
+        return messages;
     }
 
 }

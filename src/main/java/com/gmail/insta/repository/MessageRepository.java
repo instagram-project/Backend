@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
@@ -12,5 +14,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Transactional
     void deleteById(Long id);
+
+    List<Message> findByUserIdOrderByDateDesc(Long id);
 
 }

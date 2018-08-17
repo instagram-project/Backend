@@ -71,12 +71,24 @@ public class MainController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    // Получить список сообщений конкретного юзера
+    @GetMapping(value = "/feed/user/{userId}", produces = {"application/json; charset=UTF-8"})
+    ResponseEntity<List<Message>> getUserMessages(
+            @PathVariable("userId") Long userId
+    ) {
+
+        List<Message> messages = messageService.findUserMessages(userId);
+
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
     // Загрузка сообщения на сервер
     @PostMapping(value = "/upload", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<Message> uploadMessage(
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam(value = "userId", required = false) Long userId
+            @RequestParam(value = "token", required = false) String token
+            //@RequestParam(value = "userId", required = false) Long userId
     ) throws IOException {
         Message message = new Message();
         message.setText(text);
@@ -97,8 +109,9 @@ public class MainController {
             message.setFilename(resultFilename);
         }
 
-        if (userId != null) {
-            message.setUserId(userId);
+        if (token != null) {
+            User user = userService.findByResetToken(token).get();
+            message.setUserId(user.getId());
         }
 
         messageRepository.save(message);
