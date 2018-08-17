@@ -5,6 +5,7 @@ import com.gmail.insta.model.User;
 import com.gmail.insta.repository.MessageRepository;
 import com.gmail.insta.repository.UsersRepository;
 import com.gmail.insta.service.MessageService;
+import com.gmail.insta.service.TokenService;
 import com.gmail.insta.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,9 @@ public class MainController {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    TokenService tokenService;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -110,7 +114,7 @@ public class MainController {
         }
 
         if (token != null) {
-            User user = userService.findByResetToken(token).get();
+            User user = tokenService.findOneByValue(token).get().getUser();
             message.setUserId(user.getId());
         }
 
