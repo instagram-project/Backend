@@ -23,10 +23,21 @@ public class Message {
 	private Set<Comment> comments;
 
     private Long userId;
+    
+    @OneToMany(mappedBy="message", fetch = FetchType.EAGER)
+	private Set<Like> likes;
+    
 
-
-    public Message() {
+	public Message() {
     }
+	
+	public Set<Like> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Set<Like> likes) {
+		this.likes = likes;
+	}
 
     public Set<Comment> getComments() {
 		return comments;

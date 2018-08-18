@@ -6,11 +6,14 @@ public class TokenDto {
     private String value;
     private String email;
     private String name;
+    private Long user;
 
-    public static TokenDto from(Token token) {
+  
+	public static TokenDto from(Token token) {
         TokenDto tokenDto = new TokenDto(token.getValue());
         tokenDto.email = token.getUser().getEmail();
         tokenDto.name = token.getUser().getName();
+        tokenDto.user = token.getUser().getId();
         return tokenDto;
     }
 
@@ -41,4 +44,13 @@ public class TokenDto {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public Long getUser() {
+  		return user;
+  	}
+
+  	public void setUser(Long user) {
+  		this.user = user;
+  	}
+
 }
