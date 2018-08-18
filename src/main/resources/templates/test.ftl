@@ -13,7 +13,7 @@
 <#list messages as message>
     <li class="list-group-item">
         <#if message.filename??>
-            <p><img width="100px" src="/images/${message.filename}"></p>
+            <p><img width="100px" src="/${message.filename}"></p>
         </#if>
 
         <p>${message.text}</p>
