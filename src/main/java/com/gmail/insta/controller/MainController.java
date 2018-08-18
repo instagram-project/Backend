@@ -86,6 +86,17 @@ public class MainController {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
+    // Получить список сообщений юзера по токену
+    @GetMapping(value = "/feed/user_messages", produces = {"application/json; charset=UTF-8"})
+    ResponseEntity<List<Message>> getUserMessagesByToken(
+            @RequestParam("token") String token
+    ) {
+        User user = tokenService.findOneByValue(token).get().getUser();
+        List<Message> messages = messageService.findUserMessages(user.getId());
+
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
     // Загрузка сообщения на сервер
     @PostMapping(value = "/upload", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<Message> uploadMessage(
