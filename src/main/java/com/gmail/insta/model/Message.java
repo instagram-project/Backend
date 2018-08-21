@@ -20,11 +20,12 @@ public class Message {
     private Date date;
     
     @OneToMany(mappedBy="message", fetch = FetchType.EAGER)
+    @OrderBy("date")
 	private Set<Comment> comments;
 
     private Long userId;
     
-    @OneToMany(mappedBy="message", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="message", fetch = FetchType.EAGER)    
 	private Set<Like> likes;
     
 

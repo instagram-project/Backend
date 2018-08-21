@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gmail.insta.model.Comment;
@@ -22,7 +23,7 @@ public class CommentServiceImpl implements CommentService{
 	
 	@Override
 	public Optional<List<Comment>> findAllByMessage(Long id){
-		return commentRepository.findAllByMessage(id);
+		return commentRepository.findAllByMessage(id, new Sort(Sort.Direction.ASC, "date"));
 	}
 
 }
