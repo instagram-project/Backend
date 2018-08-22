@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,16 @@ public class ProfileController {
 	@Autowired
 	private UserService userService;
 		
+	
+	@RequestMapping(value = "/user/search", method = RequestMethod.GET)
+    public ResponseEntity<List<UserProfile>> search(
+    		@RequestParam("userName") String userName) { 
+		List<UserProfile> result = userService.findByName(userName)
+				.stream()
+				.map(UserProfile::from)
+				.collect(Collectors.toList());
+        return ResponseEntity.ok(result);    
+    }
 	
 	@RequestMapping(value = "/user/profile", method = RequestMethod.GET)
     public ResponseEntity<UserProfile> profile(

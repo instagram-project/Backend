@@ -5,6 +5,7 @@ import com.gmail.insta.forms.PasswordForm;
 import com.gmail.insta.forms.UserForm;
 import com.gmail.insta.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -18,6 +19,8 @@ public interface UserService {
     Optional<User> findByResetToken(String token);
 
     Optional<User> findById(Long id);
+    
+    List<User> findByName(String name);
 
     void activateUser(User user);
 

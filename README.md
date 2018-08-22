@@ -96,7 +96,14 @@ POST запрос на /forgot\
 POST запрос на /reset\
 ОБЯЗАТЕЛНЫЙ ПАРАМЕТРЫ:
 token=ТОКЕН_ИЗ_ПИСЬМА(после пред. запроса, врменно отключено)\
-и новый пароль в JSON: { "password":"qwerty123", "confirmPassword":"qwerty123" }
+и новый пароль в JSON: { "password":"qwerty123", "confirmPassword":"qwerty123" }  
+
+
+##### Поиск
+`найти пользователя по имени :`  
+GET - "/user/search?userName={NAME}"  
+возвращает список пользователей  
+пример: /user/search?userName=misha  
 
 
 ##### Profile
