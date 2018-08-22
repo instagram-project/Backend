@@ -137,3 +137,21 @@ POST - "/message/{MESSAGE_ID}/comment?token={VALUE}"
 ##### Лайки  
 POST - "/like/{MESSAGE_ID}?token={VALUE}"  
 в ответ приходит актуальный список лайкнувших юзеров для данного сообщения
+
+
+##### Подписки
+`подписаться на пользователя :`  
+POST - "/follow/users/{USER_ID}"  
+возвращает актуальный список id пользователей на которых подписан  
+пример: /follow/users/21?token=1ad04569-3974-42ee-826c-562e977facc4  
+`получить список id пользователей на которых подписан :`  
+GET - "/follow/users"  
+пример: /follow/users?token=1ad04569-3974-42ee-826c-562e977facc4  
+`получить ленту подписок с пагинацией текущего пользователя :`  
+GET - "/follow/messages"  
+дополнительный параметр page, значение по умолчанию 1  
+В хедере возвращает:  
+totalMessages  
+totalPages  
+currentPage  
+пример: /follow/messages?page=1&token=1ad04569-3974-42ee-826c-562e977facc4

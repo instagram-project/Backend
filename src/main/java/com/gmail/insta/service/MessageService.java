@@ -27,6 +27,11 @@ public class MessageService {
         
         return messages;
     }
+    
+    public Page<Message> findAllByUsers(List<Long> users, Integer pageNumber){
+    	return messageRepository.findByUserIdIn(users, PageRequest.of
+                (pageNumber-1, PAGE_SIZE, Sort.Direction.DESC, "date"));
+    }
 
     public void deleteMessage(Long id){
         messageRepository.deleteById(id);
