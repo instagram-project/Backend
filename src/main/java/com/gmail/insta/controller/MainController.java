@@ -45,7 +45,7 @@ public class MainController {
     @GetMapping(value = "/all", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<List<Message>> getMessages() {
 
-        List<Message> messages = messageRepository.findAll();
+        List<Message> messages = messageRepository.findAllByOrderByDateDesc();
 
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }

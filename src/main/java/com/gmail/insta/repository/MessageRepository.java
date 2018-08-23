@@ -23,4 +23,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     
     Page<Message> findByUserIdIn(List<Long> users, Pageable p);
 
+    List<Message> findAllByOrderByDateDesc();
+
 }
