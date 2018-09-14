@@ -2,13 +2,10 @@ package com.gmail.insta.controller;
 
 import com.gmail.insta.model.Message;
 import com.gmail.insta.model.User;
-import com.gmail.insta.repository.MessageRepository;
-import com.gmail.insta.repository.UsersRepository;
-import com.gmail.insta.service.MessageService;
+import com.gmail.insta.service.MessageServiceImpl;
 import com.gmail.insta.service.TokenService;
 import com.gmail.insta.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,13 +20,7 @@ import java.util.*;
 public class MainController {
 
     @Autowired
-    UsersRepository userRepository;
-
-    @Autowired
-    MessageRepository messageRepository;
-
-    @Autowired
-    MessageService messageService;
+    MessageServiceImpl messageService;
 
     @Autowired
     UserServiceImpl userService;
@@ -38,14 +28,11 @@ public class MainController {
     @Autowired
     TokenService tokenService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
     // Получить список всех сообщений
     @GetMapping(value = "/all", produces = {"application/json; charset=UTF-8"})
     ResponseEntity<List<Message>> getMessages() {
 
-        List<Message> messages = messageRepository.findAllByOrderByDateDesc();
+        List<Message> messages = messageService.getOrderedMessages();
 
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
@@ -70,7 +57,7 @@ public class MainController {
     ResponseEntity<Message> findMessage(
             @RequestParam(value = "messageId", required = false) Long messageId) {
         long id = messageId;
-        Message message = messageRepository.findById(id);
+        Message message = messageService.getMessageById(id);
 
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
@@ -104,32 +91,13 @@ public class MainController {
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "token", required = false) String token
             //@RequestParam(value = "userId", required = false) Long userId
-    ) throws IOException {
-        Message message = new Message();
-        message.setText(text);
-        message.setDate(new Date());
+    ) {
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-            message.setFilename(resultFilename);
+        try {
+            messageService.saveNewMessage(text, file, token);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        if (token != null) {
-            User user = tokenService.findOneByValue(token).get().getUser();
-            message.setUserId(user.getId());
-        }
-
-        messageRepository.save(message);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -149,12 +117,4 @@ public class MainController {
         Message message = messageService.editMessage(messageId, text);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
-
-    @RequestMapping("/all_users")
-    ResponseEntity<Collection<User>> getUsers(){
-        Collection<User> users = userRepository.findAll();
-
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
 }

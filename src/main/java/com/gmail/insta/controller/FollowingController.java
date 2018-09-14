@@ -18,7 +18,7 @@ import com.gmail.insta.model.Following;
 import com.gmail.insta.model.Message;
 import com.gmail.insta.model.User;
 import com.gmail.insta.service.FollowingService;
-import com.gmail.insta.service.MessageService;
+import com.gmail.insta.service.MessageServiceImpl;
 import com.gmail.insta.service.TokenService;
 
 
@@ -27,13 +27,13 @@ public class FollowingController {
 	
 	private final FollowingService followingService;
 	private final TokenService tokenService;
-	private final MessageService messageService;
+	private final MessageServiceImpl messageService;
 	
 	@Autowired
     public FollowingController(
-    		FollowingService followingService, 
-    		MessageService messageService,
-    		TokenService tokenService) {
+            FollowingService followingService,
+            MessageServiceImpl messageService,
+            TokenService tokenService) {
         this.followingService = followingService;
         this.messageService = messageService;
         this.tokenService = tokenService;		

@@ -1,54 +1,34 @@
 package com.gmail.insta.service;
 
 import com.gmail.insta.model.Message;
-import com.gmail.insta.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gmail.insta.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-@Service
-public class MessageService {
+public interface MessageService {
 
-    @Autowired
-    MessageRepository messageRepository;
+    public List<Message> getOrderedMessages();
 
-    private final static int PAGE_SIZE = 10;
+    public Message getMessageById(long id);
 
-    public Page<Message> findAll(Integer pageNumber) {
+    public void saveNewMessage(String text, MultipartFile file, String token) throws IOException;
 
-        Page<Message> messages = messageRepository.findAll(PageRequest.of
-                (pageNumber-1, PAGE_SIZE, Sort.Direction.DESC, "date"));
-        int totalPages = messages.getTotalPages();
-        
-        return messages;
-    }
-    
-    public Page<Message> findAllByUsers(List<Long> users, Integer pageNumber){
-    	return messageRepository.findByUserIdIn(users, PageRequest.of
-                (pageNumber-1, PAGE_SIZE, Sort.Direction.DESC, "date"));
-    }
+    public Page<Message> findAll(Integer pageNumber);
 
-    public void deleteMessage(Long id){
-        messageRepository.deleteById(id);
-    }
+    public Page<Message> findAllByUsers(List<Long> users, Integer pageNumber);
 
-    public Message editMessage(Long id, String text){
-        Optional<Message> optMessage = messageRepository.findById(id);
-        Message message = optMessage.get();
-        message.setText(text);
-        messageRepository.save(message);
+    public void deleteMessage(Long id);
 
-        return message;
-    }
+    public Message editMessage(Long id, String text);
 
-    public List<Message> findUserMessages(Long id){
-        List<Message> messages = messageRepository.findByUserIdOrderByDateDesc(id);
-        return messages;
-    }
-
+    public List<Message> findUserMessages(Long id);
 }

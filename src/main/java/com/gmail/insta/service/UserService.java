@@ -5,6 +5,7 @@ import com.gmail.insta.forms.PasswordForm;
 import com.gmail.insta.forms.UserForm;
 import com.gmail.insta.model.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +31,5 @@ public interface UserService {
 
     void changePassword(User user, PasswordForm passwordForm);
 
+    List<User> findAllUsers();
 }
